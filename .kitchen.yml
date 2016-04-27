@@ -1,0 +1,51 @@
+# Kitche+Vagrant doc: https://github.com/test-kitchen/kitchen-vagrant/blob/master/README.md
+driver:
+  name: vagrant
+  vm_hostname: supermarket.myorg.chefdemo.net
+  #gui: true
+  # Mount local /Users/apop/chef-kits folder as /mnt/share on the VM
+  synced_folders:
+  - ['~/chef-kits', '/mnt/share', 'disabled: false']
+  customize:
+    cpus: 2
+    memory: 1024
+    name: supermarket.myorg.chefdemo.net
+
+driver_config:
+  # I don't login often, but when I do, I do it as root
+  username: root
+  password: vagrant
+
+provisioner:
+  name: chef_zero
+  # Install this exact version of chef-client
+  #require_chef_omnibus: 12.4.1
+  # Use the local chef-client rpm specified in install_chef_rpm.sh:
+  #chef_omnibus_url: file:///mnt/share/install_chef_rpm.sh
+  client_rb:
+    # Use :enabled, :disabled or :audit_only to run the ServerSpec tests in the recipes
+    audit_mode: :disabled
+
+platforms:
+  - name: centos-72
+    driver:
+      box: 'chef/centos-7.2'
+      # see available box urls here: https://opscode-vm-bento.s3.amazonaws.com/
+      box_url: https://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-7.2_chef-provisionerless.box
+      #box_url: file:///Users/srussell/Source//Pushjobs/opscode_centos-6.6_chef-provisionerless.box
+      # Use the default host-only network along the NAT one. Makes life easier from a networking perspective
+      network:
+      - ['private_network', {ip: '192.168.56.44'}]
+
+suites:
+  - name: default
+    run_list:
+      - recipe[delivery_supermarket::default]
+    attributes:
+      supermarket_omnibus:
+        chef_server_url: 'https://no-fqdn-centos-71'
+        chef_oauth2_app_id: '130d2be47f2a3c437eed5d53ddeb0272a2ced69b349979a56f04403a0d89f66c'
+        chef_oauth2_secret: 'daa8a8f7897765f987cc178923e870ddb6ca3d6503c51989db369fd0ce9dfa0c'
+        chef_oauth2_verify_ssl: false
+      chef-ingredient:
+        timeout: 1800
