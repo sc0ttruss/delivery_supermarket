@@ -43,7 +43,7 @@ suites:
       - recipe[delivery_supermarket::default]
     attributes:
       supermarket_omnibus:
-        chef_server_url: 'https://no-fqdn-centos-71'
+        chef_server_url: 'https://chef.myorg.chefdemo.net'
         chef_oauth2_app_id: '130d2be47f2a3c437eed5d53ddeb0272a2ced69b349979a56f04403a0d89f66c'
         chef_oauth2_secret: 'daa8a8f7897765f987cc178923e870ddb6ca3d6503c51989db369fd0ce9dfa0c'
         chef_oauth2_verify_ssl: false
